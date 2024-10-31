@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import axiosJWT from "../../Utils/AxiosService";
 import { USER_API } from "../../Constants/Index";
 import { DoctorInterface } from "../../Types/DoctorInterface";
