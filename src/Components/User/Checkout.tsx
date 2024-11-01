@@ -1,7 +1,7 @@
 import { loadStripe } from "@stripe/stripe-js";
 import React, { useEffect , useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { USER_API } from "../../Constants/Index";
 import { RootState } from "../../Redux/Store/Store";
 import axiosJWT from '../../Utils/AxiosService';
@@ -15,7 +15,6 @@ const Checkout: React.FC = () => {
   const [showPaymentOptions, setShowPaymentOptions] = useState<boolean>(false);
   const [walletBalance, setWalletBalance] = useState<number>(0); 
   const [paymentMethod, setPaymentMethod] = useState("Online");
-  const navigate = useNavigate();
   
 
 
@@ -77,7 +76,12 @@ const Checkout: React.FC = () => {
 
         // Update wallet amount before navigating
         
-        window.location.href = `https://health-hub-frontend.vercel.app/payment_status/${bookingId}?success=true`;
+        // window.location.href = `https://health-hub-frontend.vercel.app/payment_status/${bookingId}?success=true`;
+
+
+        Navigate({
+          to: `${"https:/health-hub-frontend.vercel.app"}/payment_status/${bookingId}?success=true`,
+        });
 
       } else {
         showToast(response.data.message, "error");
