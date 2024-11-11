@@ -16,8 +16,7 @@ const Chat: React.FC = () => {
   const [newMessage, setNewMessage] = useState<string>('');
   const [arrivalMessage, setArrivalMessage] = useState<any>(null);
   const [receiverData, setReceiverData] = useState<any | null>(null);
-  const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [receiverId, setReceiverId] = useState<string | null>(null); // Added receiverId state
+  const [, setReceiverId] = useState<string | null>(null); // Added receiverId state
 
   
   const socket = useSocket();
@@ -33,11 +32,7 @@ const Chat: React.FC = () => {
     });
   }, [socket]);
 
-  useEffect(() => {
-    socket?.on("senderTyping", (isTyping: boolean) => {
-      setIsTyping(isTyping);
-    });
-  }, [socket]);
+  
 
   useEffect(() => {
     socket?.on("updateLastMessage", (data: any) => {
@@ -70,20 +65,7 @@ const Chat: React.FC = () => {
   //   socket?.on("getUsers", (_users: any) => {});
   // }, [doctor, socket]);
 
-  const emitTypingStatus = (isTyping: boolean) => {
-    if (receiverId) {
-      socket?.emit("typing", {
-        receiverId,
-        isTyping,
-        userId: doctor.id,
-      });
-    }
-  };
-
-  const handleTypingStatus = (action: "focus" | "blur") => {
-    emitTypingStatus(action === "focus");
-  };
-
+ 
 
   // Load conversations
   useEffect(() => {
@@ -234,7 +216,7 @@ const Chat: React.FC = () => {
               <div key={index} onClick={() => handleConversationClick(conversation)}>
                 <Conversation
                   conversation={conversation}
-                  lastMessage={conversation.lastMessage} isTyping={false} isOnline={false}                />
+                  lastMessage={conversation.lastMessage}              />
               </div>
             ))}
           </div>
@@ -263,18 +245,9 @@ const Chat: React.FC = () => {
                       />
                     </div>
                   ))}
-                 <div className="flex items-center justify-center">
-                    <small className="mr-1">{isTyping ? "Typing..." : ""}</small>
-                  </div>
+                
                   <div className="flex items-center">
-                    <textarea
-                      className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                      placeholder="Type your message..."
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onFocus={() => handleTypingStatus("focus")}
-                      onBlur={() => handleTypingStatus("blur")}
-                    />
+                   
                     <button
                       className="bg-blue-500 text-white px-3 py-1 ml-2 rounded-lg"
                       onClick={handleSubmit}
