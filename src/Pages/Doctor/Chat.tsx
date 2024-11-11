@@ -32,8 +32,7 @@ const Chat: React.FC = () => {
     });
   }, [socket]);
 
-  
-
+ 
   useEffect(() => {
     socket?.on("updateLastMessage", (data: any) => {
       setConversations((prevConversations) => {
@@ -65,7 +64,7 @@ const Chat: React.FC = () => {
   //   socket?.on("getUsers", (_users: any) => {});
   // }, [doctor, socket]);
 
- 
+  
 
   // Load conversations
   useEffect(() => {
@@ -216,7 +215,7 @@ const Chat: React.FC = () => {
               <div key={index} onClick={() => handleConversationClick(conversation)}>
                 <Conversation
                   conversation={conversation}
-                  lastMessage={conversation.lastMessage}              />
+                  lastMessage={conversation.lastMessage}             />
               </div>
             ))}
           </div>
@@ -247,7 +246,13 @@ const Chat: React.FC = () => {
                   ))}
                 
                   <div className="flex items-center">
-                   
+                    <textarea
+                      className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                      placeholder="Type your message..."
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                     
+                    />
                     <button
                       className="bg-blue-500 text-white px-3 py-1 ml-2 rounded-lg"
                       onClick={handleSubmit}

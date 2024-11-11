@@ -23,7 +23,7 @@ const Chat: React.FC = () => {
   const [receiverData, setReceiverData] = useState<any | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const socket = useSocket();
-  const [, setReceiverId] = useState<string | null>(null); // Added receiverId state
+  const [receiverId, setReceiverId] = useState<string | null>(null); // Added receiverId state
 
   useEffect(() => {
     socket?.on("getMessage", (data: any) => {
@@ -68,8 +68,7 @@ const Chat: React.FC = () => {
   //   socket?.on("getUsers", (_users: any) => {});
   // }, [user, socket]);
 
-
-  
+ 
 
   useEffect(() => {
     const getConversations = async () => {
@@ -211,7 +210,7 @@ console.log('dataaa',data);
               <div key={index} onClick={() => handleConversationClick(conversation)}>
                 <Conversation
                   conversation={conversation}
-                  lastMessage={conversation.lastMessage}            />
+                  lastMessage={conversation.lastMessage}              />
               </div>
             ))}
           </div>
@@ -238,7 +237,13 @@ console.log('dataaa',data);
                   ))}
                   
                   <div className="flex items-center">
-                    
+                    <textarea
+                      className="w-full px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                      placeholder="Type your message..."
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      
+                    />
                     <button
                       className="bg-blue-500 text-white px-3 py-1 ml-2 rounded-lg"
                       onClick={handleSubmit}
