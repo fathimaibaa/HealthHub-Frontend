@@ -1,8 +1,8 @@
 export const nameRegex = /^[A-Z][a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/;
 export const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
 export const phoneRegex = /^\d{10}$/;
-export const BASE_URL = "https://fathimaodayi.site/api/";
-export const SERVER_URL = "https://fathimaodayi.site/"
+export const BASE_URL = "https://healthhub-backend-qckw.onrender.com";
+export const SERVER_URL = "https://healthhub-backend-qckw.onrender.com"
 
 
 // export const BASE_URL = "http://localhost:5000/api/";
