@@ -23,7 +23,6 @@ const Chat: React.FC = () => {
   const [receiverData, setReceiverData] = useState<any | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const socket = useSocket();
-  const [receiverId, setReceiverId] = useState<string | null>(null); // Added receiverId state
 
   useEffect(() => {
     socket?.on("getMessage", (data: any) => {
@@ -124,7 +123,7 @@ console.log('dataaa',data);
   const handleConversationClick = async (conversation: any) => {
     setCurrentChat(conversation);
     const id = conversation.members.find((member: any) => member !== user.id);
-    setReceiverId(id); // Set receiverId state
+   
 
     try {
       const response: any = await axiosJWT.get(`${USER_API}/doctor/${id}`);
