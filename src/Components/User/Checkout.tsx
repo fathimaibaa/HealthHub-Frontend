@@ -80,7 +80,7 @@ const Checkout: React.FC = () => {
 
 
         Navigate({
-          to: `${"http://localhost:5173"}/payment_status/${bookingId}?success=true`,
+          to: `${"https://app.healthhubapp.online"}/payment_status/${bookingId}?success=true`,
         });
 
       } else {
