@@ -76,7 +76,7 @@ const Checkout: React.FC = () => {
 
         // Update wallet amount before navigating
         
-        // window.location.href = `https://health-hub-frontend.vercel.app/payment_status/${bookingId}?success=true`;
+        window.location.href = `https://health-hub-frontend.vercel.app/payment_status/${bookingId}?success=true`;
 
 
         Navigate({
