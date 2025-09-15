@@ -80,7 +80,7 @@ const Checkout: React.FC = () => {
 
 
         Navigate({
-          to: `${"https://healthhubapp.online"}/payment_status/${bookingId}?success=true`,
+          to: `${"https://health-hub-frontend.vercel.app/"}/payment_status/${bookingId}?success=true`,
         });
 
       } else {
