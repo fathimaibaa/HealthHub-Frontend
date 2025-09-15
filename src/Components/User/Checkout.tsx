@@ -76,7 +76,7 @@ const Checkout: React.FC = () => {
 
         // Update wallet amount before navigating
         
-        window.location.href = `https://healthhubapp.online/payment_status/${bookingId}?success=true`;
+        window.location.href = `https://app.healthhubapp.online/payment_status/${bookingId}?success=true`;
 
 
         // Navigate({
