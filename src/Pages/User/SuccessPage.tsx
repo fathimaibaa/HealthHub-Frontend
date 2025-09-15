@@ -17,7 +17,7 @@ const SuccessPage = () => {
   if (status) {
     const paymentStatus = isSuccess ? "Paid" : "Failed";
     axiosJWT
-      .patch(USER_API + `/payment/status/${id}`, { paymentStatus })
+      .patch(USER_API + `/payment_status/${id}`, { paymentStatus })
       .then(({ data }) => console.log(data))
       .catch((err: any) => console.log(err));
   }
