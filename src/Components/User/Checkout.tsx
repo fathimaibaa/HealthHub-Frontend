@@ -79,9 +79,9 @@ const Checkout: React.FC = () => {
         window.location.href = `https://health-hub-frontend.vercel.app/payment_status/${bookingId}?success=true`;
 
 
-        Navigate({
-          to: `${"https://health-hub-frontend.vercel.app/"}/payment_status/${bookingId}?success=true`,
-        });
+        // Navigate({
+        //   to: `${"http://localhost:5173"}/payment_status/${bookingId}?success=true`,
+        // });
 
       } else {
         showToast(response.data.message, "error");
