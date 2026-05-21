@@ -213,7 +213,12 @@ const handleSubmit = async (event: any) => {
       documentsData.push({ name: document.name, url: url });
     }
     
-    const response:any = await axiosJWT.post(`${USER_API}/uploadDocuments`, {   id: id, documents: documentsData, });
+  const response:any = await axiosJWT.post(`${USER_API}/uploadDocuments`, {
+  appointmentId: id,
+  documents: documentsData,
+});
+
+    // const response:any = await axiosJWT.post(`${USER_API}/uploadDocuments`, {   id: id, documents: documentsData, });
     if (response.data.sucess) {
       showToast('Documents uploaded successfully', 'success');
       setShowDocumentModal(false);

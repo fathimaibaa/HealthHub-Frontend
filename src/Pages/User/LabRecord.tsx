@@ -1,25 +1,40 @@
 import { useState } from "react";
 
+type DocumentItem = {
+  name: string;
+  file: File | null;
+};
+
 const UploadForm = () => {
-  const [documents, setDocuments] = useState([
+  const [documents, setDocuments] = useState<DocumentItem[]>([
     { name: "Blood Test Report", file: null },
     { name: "X-ray Scan", file: null },
   ]);
 
   const handleNameChange = (index: number, value: string) => {
-    const updatedDocuments = [...documents];
-    updatedDocuments[index].name = value;
-    setDocuments(updatedDocuments);
+    const updated = [...documents];
+    updated[index].name = value;
+    setDocuments(updated);
   };
 
-  const handleFileChange = (index: number, file: any) => {
-    const updatedDocuments = [...documents];
-    updatedDocuments[index].file = file;
-    setDocuments(updatedDocuments);
+  const handleFileChange = (index: number, file: File | null) => {
+    const updated = [...documents];
+    updated[index].file = file;
+    setDocuments(updated);
   };
 
-  const handleSubmit = (event: { preventDefault: () => void }) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    // basic validation (important)
+    for (const doc of documents) {
+      if (!doc.name.trim() || !doc.file) {
+        alert("Please fill all document names and upload files");
+        return;
+      }
+    }
+
+    console.log("Ready to upload:", documents);
   };
 
   const addDocument = () => {
@@ -27,9 +42,11 @@ const UploadForm = () => {
   };
 
   const removeDocument = (index: number) => {
-    const updatedDocuments = [...documents];
-    updatedDocuments.splice(index, 1);
-    setDocuments(updatedDocuments);
+    if (documents.length === 1) return;
+
+    const updated = [...documents];
+    updated.splice(index, 1);
+    setDocuments(updated);
   };
 
   return (
@@ -37,16 +54,15 @@ const UploadForm = () => {
       <h1 className="text-2xl font-bold mb-6 text-center">
         Upload Lab Documents
       </h1>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         {documents.map((document, index) => (
-          <div key={index}>
-            <div className="flex items-center justify-between mb-2">
-              <label
-                htmlFor={`docName${index}`}
-                className="block text-sm font-medium text-gray-700"
-              >
-                Document Name:
+          <div key={index} className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-700">
+                Document Name
               </label>
+
               {index > 0 && (
                 <button
                   type="button"
@@ -57,43 +73,47 @@ const UploadForm = () => {
                 </button>
               )}
             </div>
+
             <input
               type="text"
-              id={`docName${index}`}
-              name={`docName${index}`}
-              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="p-2 w-full border rounded"
               value={document.name}
-              onChange={(e) => handleNameChange(index, e.target.value)}
+              onChange={(e) =>
+                handleNameChange(index, e.target.value)
+              }
               required
             />
+
             <input
               type="file"
-              id={`docFile${index}`}
-              name={`docFile${index}`}
               accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
-              className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              onChange={(e:any) => handleFileChange(index, e.target.files[0])}
+              className="p-2 w-full border rounded"
+              onChange={(e) =>
+                handleFileChange(
+                  index,
+                  e.target.files ? e.target.files[0] : null
+                )
+              }
               required
             />
           </div>
         ))}
+
         <button
           type="button"
           onClick={addDocument}
-          className="w-full bg-gray-200 text-gray-800 p-2 rounded-md hover:bg-gray-300"
+          className="w-full bg-gray-200 p-2 rounded"
         >
           Add Document
         </button>
+
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white p-2 rounded"
         >
           Upload
         </button>
       </form>
-      <div id="uploadStatus" className="mt-4 text-center">
-        Upload status will be shown here
-      </div>
     </div>
   );
 };
