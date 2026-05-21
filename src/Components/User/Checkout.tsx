@@ -45,7 +45,6 @@ const Checkout: React.FC = () => {
       const stripePromise = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
       const response:any = await axiosJWT.post(`${USER_API}/appointments`, {
         ...appointmentData,
-        userId,
         paymentMethod
       });
       if (response.data.id) {
@@ -68,20 +67,11 @@ const Checkout: React.FC = () => {
     try {
       const response :any= await axiosJWT.post(`${USER_API}/walletPayment`, {
         ...appointmentData,
-        userId,
         paymentMethod
       });
       if (response.data.success) {
         const bookingId = response.data.createBooking._id;
-
-        // Update wallet amount before navigating
-        
-        window.location.href = `https://app.healthhubapp.online/payment_status/${bookingId}?success=true`;
-
-
-        // Navigate({
-        //   to: `${"http://localhost:5173"}/payment_status/${bookingId}?success=true`,
-        // });
+        window.location.href = `${window.location.origin}/payment_status/${bookingId}?success=true`;
 
       } else {
         showToast(response.data.message, "error");

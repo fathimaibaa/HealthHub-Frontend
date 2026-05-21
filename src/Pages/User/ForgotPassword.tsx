@@ -3,6 +3,7 @@ import { USER_API, emailRegex } from "../../Constants/Index";
 import { useFormik } from "formik";
 import axios from "axios";
 import showToast from "../../Utils/Toaster";
+import getApiErrorMessage from "../../Utils/getApiErrorMessage";
 
 
 
@@ -25,8 +26,8 @@ const ForgotPassword = () => {
       axios
         .post<ForgotPasswordResponse>(USER_API + "/forgot_password", { email })
         .then(({ data }) => showToast(data.message, "success"))
-        .catch(({ response }) => {
-          showToast(response.data.message, "error");
+        .catch((error) => {
+          showToast(getApiErrorMessage(error, "Request failed"), "error");
         });
     },
   });

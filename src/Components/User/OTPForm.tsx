@@ -8,6 +8,7 @@ import {
   removeItemFromLocalStorage,
 } from "../../Utils/Setnget";
 import showToast from "../../Utils/Toaster";
+import getApiErrorMessage from "../../Utils/getApiErrorMessage";
 import { useNavigate } from "react-router-dom";
 interface VerifyOtpResponse {
   message: string;
@@ -41,8 +42,8 @@ const OTPForm: React.FC = () => {
             removeItemFromLocalStorage("userId");
             setTimeout(() => navigate("/user/login"), 1000);
           })
-          .catch(({ response }) => {
-            showToast(response.data.message, "error");
+          .catch((error) => {
+            showToast(getApiErrorMessage(error, "OTP verification failed"), "error");
           });
       } else {
         showToast("Something went wrong", "error");
@@ -71,8 +72,8 @@ const OTPForm: React.FC = () => {
         .then(({ data }) => {
           showToast(data.message, "success");
         })
-        .catch(({ response }) => {
-          showToast(response.data.message, "error");
+        .catch((error) => {
+          showToast(getApiErrorMessage(error, "Failed to resend OTP"), "error");
         });
     } else {
       showToast("Something went wrong", "error");

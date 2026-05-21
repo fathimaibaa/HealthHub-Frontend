@@ -8,6 +8,7 @@ import { ADMIN_API } from "../../Constants/Index";
 import { useAppDispatch } from "../../Redux/Store/Store";
 import { setUser } from "../../Redux/Slices/UserSlice";
 import { setItemToLocalStorage } from "../../Utils/Setnget";
+import getApiErrorMessage from "../../Utils/getApiErrorMessage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -49,10 +50,9 @@ const Login: React.FC = () => {
           dispatch(setUser({ isAuthenticated: true, name, role }));
           navigate("/admin");
         })
-        .catch(({ response }) => {
-          const { message } = response.data as LoginResponse;
+        .catch((error) => {
           setIsSubmitting(false);
-          showToast(message, "error");
+          showToast(getApiErrorMessage(error, "Login failed"), "error");
         });
     },
   });

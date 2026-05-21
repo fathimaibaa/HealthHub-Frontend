@@ -18,7 +18,9 @@ const ProtectedRoute: FC = () => {
   export const DoctorProtectedRoute: FC = () => {
     const { isAuthenticated, role } = useAppSelector((state) => state.DoctorSlice);
     return isAuthenticated && role === "doctor" ? (
-      <Outlet />
+      <ZegoCloud>
+        <Outlet />
+      </ZegoCloud>
     ) : (
       <Navigate to={"/doctor/login"} replace />
     );

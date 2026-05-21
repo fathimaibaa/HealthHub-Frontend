@@ -4,6 +4,7 @@ import { validateResetPassword } from "../../Utils/Validation";
 import axios from "axios";
 import { USER_API } from "../../Constants/Index";
 import showToast from "../../Utils/Toaster";
+import getApiErrorMessage from "../../Utils/getApiErrorMessage";
 import { useFormik } from "formik";
 
 interface ResetPasswordResponse {
@@ -27,7 +28,9 @@ const ResetPasswordForm = () => {
               showToast(data.message, "success");
               navigate("/user/login");
             })
-            .catch(({ response }) => showToast(response.data.message, "error"));
+            .catch((error) =>
+              showToast(getApiErrorMessage(error, "Password reset failed"), "error")
+            );
         },
       });
       

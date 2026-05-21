@@ -1,5 +1,4 @@
-
-
+import { useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import Navbar from "../../Components/User/Navbar/Navbar";
 import PaymentMessage from "../../Components/User/Payment";
@@ -12,15 +11,17 @@ const SuccessPage = () => {
   const { id } = useParams();
 
   const status = searchParams.get("success");
-  const isSuccess = status === "true" ? true : false;
+  const isSuccess = status === "true";
 
-  if (status) {
+  useEffect(() => {
+    if (!status || !id) return;
+
     const paymentStatus = isSuccess ? "Paid" : "Failed";
     axiosJWT
       .patch(USER_API + `/payment/status/${id}`, { paymentStatus })
       .then(({ data }) => console.log(data))
-      .catch((err: any) => console.log(err));
-  }
+      .catch((err: unknown) => console.log(err));
+  }, [status, id, isSuccess]);
 
   return (
     <>

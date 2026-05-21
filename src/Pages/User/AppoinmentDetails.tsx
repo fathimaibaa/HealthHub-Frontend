@@ -8,8 +8,6 @@ import { FaFilePdf, FaFileUpload, FaPlus, FaTimes, FaTrash } from "react-icons/f
 import { FiMessageSquare } from "react-icons/fi";
 import axios from "axios";
 import { useAppSelector } from "../../Redux/Store/Store";
-import { ZIM } from "zego-zim-web";
-import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { uploadDocumentToCloudinary } from "../../Api/UploadImages";
 import { AiOutlineFileText } from "react-icons/ai";
 
@@ -36,15 +34,6 @@ const AppointmentDetails: React.FC = () => {
     },
   ]);
 
-  const userID = user.id;
-  const userName = user.name;
-  const appID = 781119315;
-  const serverSecret = "0aa58af2be18087bf71a24099968765b";
-  //@ts-ignore
-  const TOKEN = ZegoUIKitPrebuilt.generateKitTokenForTest(appID,serverSecret,null,userID,userName);
-  const zp = ZegoUIKitPrebuilt.create(TOKEN);
-  zp.addPlugins({ ZIM });
-
   useEffect(() => {
     const fetchBookingDetails = async () => {
       try {
@@ -69,7 +58,7 @@ const AppointmentDetails: React.FC = () => {
     fetchBookingDetails();
 
  
-}, [id,userID]);
+}, [id]);
 
   const handleCancelAppointment = async () => {
     try {
@@ -130,7 +119,8 @@ const AppointmentDetails: React.FC = () => {
     if (withinOneHour) {
       return (
         <p className="text-purple-700 text-xl font-bold">
-          Please stay on this site. The doctor will connect with you on time.
+          Please stay on this page. When the doctor starts the video call, accept
+          the incoming call popup. Allow camera and microphone access if prompted.
         </p>
       );
     }

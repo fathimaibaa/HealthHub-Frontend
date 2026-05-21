@@ -9,6 +9,7 @@ import { useAppDispatch } from "../../Redux/Store/Store";
 import login from '../../Assets/Images/login.jpg';
 import { setDoctor } from "../../Redux/Slices/DoctorSlice";
 import { setItemToLocalStorage } from "../../Utils/Setnget";
+import getApiErrorMessage from "../../Utils/getApiErrorMessage";
 
 interface Doctor {
   doctorName: string;
@@ -49,10 +50,9 @@ const Login: React.FC = () => {
             navigate("/doctor");
           }, 1000);
         })
-        .catch(({ response }) => {
-          const { message } = response.data as { message: string };
+        .catch((error) => {
           setIsSubmitting(false);
-          showToast(message, "error");
+          showToast(getApiErrorMessage(error, "Login failed"), "error");
         });
     },
   });

@@ -6,6 +6,7 @@ import { validateSignUp } from "../../Utils/Validation";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import showToast from '../../Utils/Toaster';
+import getApiErrorMessage from '../../Utils/getApiErrorMessage';
 import { USER_API } from '../../Constants/Index';
 import axios from 'axios';
 import { setItemToLocalStorage } from '../../Utils/Setnget';
@@ -53,10 +54,9 @@ const Register: React.FC = () => {
                 navigate("/user/verify_otp");
               }, 1000);
             })
-            .catch(({ response }) => {
-              const { message } = response.data;
+            .catch((error) => {
               setIsSubmitting(false);
-              showToast(message, "error");
+              showToast(getApiErrorMessage(error, "Registration failed"), "error");
             });
         },
       });

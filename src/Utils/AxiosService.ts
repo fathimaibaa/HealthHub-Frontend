@@ -37,10 +37,10 @@ const getAccessToken = async () => {
     let user = data?.user || data?.doctor;
     
 
-    const decodedToken: Payload = await jwtDecode(token);
+    const decodedToken: Payload = jwtDecode(token);
     const { role } = decodedToken;
     if (role === "doctor" || role === "user") {
-      if (user.isBlocked)
+      if (user?.isBlocked)
         logout("Your account has been blocked by administrator", "error");
       else if (user?.doctor?.isBlocked)
         doctorlogout("Your account has been blocked by administrator", "error");
@@ -52,24 +52,31 @@ const getAccessToken = async () => {
 
 axiosJWT.interceptors.request.use(async (config:any) => {
     let currentDate = new Date();
-    let decodedToken;
-    let accessToken;
+    let decodedToken: Payload | null = null;
+    let accessToken: string | undefined;
+
     try {
-  
-      accessToken = await getAccessToken() as string
-     
-      decodedToken = await jwtDecode(accessToken);
+      accessToken = await getAccessToken() as string;
+      if (accessToken) {
+        decodedToken = jwtDecode<Payload>(accessToken);
+      }
     } catch (error) {
     }
-  
-    if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      for(let i=0;i<100;i++){
-      }
+
+    if (
+      decodedToken?.exp &&
+      decodedToken.exp * 1000 < currentDate.getTime()
+    ) {
       accessToken = await getNewAccessToken();
-      decodedToken = jwtDecode<Payload>(accessToken); 
+      if (accessToken) {
+        decodedToken = jwtDecode<Payload>(accessToken);
+      }
     }
-    config.headers["Authorization"] = "Bearer " + accessToken;
-  
+
+    if (accessToken) {
+      config.headers["Authorization"] = "Bearer " + accessToken;
+    }
+
     return config;
   });
 

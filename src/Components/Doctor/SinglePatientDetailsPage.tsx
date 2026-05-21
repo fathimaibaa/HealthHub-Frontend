@@ -6,10 +6,13 @@ import { RiFileAddLine } from "react-icons/ri";
 import showToast from "../../Utils/Toaster";
 import { AiOutlineFileText, AiOutlineVideoCamera } from "react-icons/ai";
 import { FiMessageSquare } from "react-icons/fi";
-import { ZIM } from "zego-zim-web";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useAppSelector } from "../../Redux/Store/Store";
 import axios from "axios";
+import {
+  getAppointmentRoomId,
+  getZegoInstance,
+} from "../../Utils/ZegoService";
 
 const PatientDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,37 +33,49 @@ const PatientDetailPage = () => {
   const [isVideoCallDisabled, setIsVideoCallDisabled] = useState(false);
   const [isCallJoined, setIsCallJoined] = useState(false);
 
-  const userID = doctor.id;
-  const userName = doctor.name;
-  const appID = 781119315;
-  const serverSecret = "0aa58af2be18087bf71a24099968765b";
-  //@ts-ignore
-  const TOKEN = ZegoUIKitPrebuilt.generateKitTokenForTest(appID,serverSecret,null,userID,userName);
-
-  const zp = ZegoUIKitPrebuilt.create(TOKEN);
-  zp.addPlugins({ ZIM });
-
   function invite() {
-    if (!zp) {
-      console.error("ZegoUIKitPrebuilt instance is not initialized.");
+    if (!doctor.id || !doctor.name) {
+      showToast("Doctor session is not ready. Please log in again.", "error");
       return;
     }
-    
+
+    if (!patient?.userId) {
+      showToast("Patient account is missing for this appointment.", "error");
+      return;
+    }
+
+    const zp = getZegoInstance();
+    if (!zp) {
+      showToast(
+        "Video call is unavailable. Check Zego credentials in .env and refresh.",
+        "error"
+      );
+      return;
+    }
+
     const targetUser = {
-      userID: patient.userId,
-      userName: patient.patientName,
+      userID: String(patient.userId),
+      userName: patient.patientName || "Patient",
     };
+
     zp.sendCallInvitation({
       callees: [targetUser],
       callType: ZegoUIKitPrebuilt.InvitationTypeVideoCall,
-      timeout: 60, // Timeout duration (second). 60s by default, range from [1-600s].
+      roomID: getAppointmentRoomId(id!),
+      timeout: 60,
     })
       .then((res) => {
-        console.warn(res);
-        setIsCallJoined(true); 
+        if (res.errorInvitees?.length) {
+          showToast(
+            "Patient could not be reached. Ask them to open appointment details and stay on the page.",
+            "error"
+          );
+          return;
+        }
+        setIsCallJoined(true);
       })
-      .catch((err) => {
-        console.warn(err);
+      .catch(() => {
+        showToast("Failed to start video call. Check Zego configuration.", "error");
       });
   }
 

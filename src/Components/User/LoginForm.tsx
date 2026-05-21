@@ -11,6 +11,7 @@ import { USER_API } from "../../Constants/Index";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { setItemToLocalStorage } from "../../Utils/Setnget";
+import getApiErrorMessage from "../../Utils/getApiErrorMessage";
 import login from '../../Assets/Images/login.jpg'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -30,7 +31,8 @@ interface GoogleSignInResponse {
   user: {
     name: string;
     role: string;
-    _id: string;
+    _id?: string;
+    id?: string;
   };
   message: string;
   access_token: string;
@@ -62,25 +64,39 @@ const Login: React.FC = () => {
         dispatch(setUser({ isAuthenticated: true, name, role, id: _id }));
         navigate("/");
       })
-      .catch(({ response }) => {
-        const { message } = response.data;
-        setIsSubmitting(false);
-        showToast(message, "error");
-      });
+      .catch((error) => {
+        showToast(getApiErrorMessage(error, "Login failed"), "error");
+      })
+      .finally(() => setIsSubmitting(false));
     
     },
   });
 
-  const handleGooglSignIn = (user: {
-    name: string;
+  const handleGooglSignIn = (profile: {
+    name?: string;
+    given_name?: string;
+    family_name?: string;
     email: string;
     picture: string;
     email_verified: boolean;
   }) => {
+    const name =
+      profile.name ||
+      [profile.given_name, profile.family_name].filter(Boolean).join(" ") ||
+      profile.email;
+
     axios
-    .post<GoogleSignInResponse>(USER_API + "/google_signIn", { user })
+    .post<GoogleSignInResponse>(USER_API + "/google_signIn", {
+      user: {
+        name,
+        email: profile.email,
+        picture: profile.picture,
+        email_verified: profile.email_verified,
+      },
+    })
     .then(({ data }) => {
       const { message, user, access_token, refresh_token } = data;
+      const userId = user._id ?? user.id;
       setItemToLocalStorage("access_token", access_token);
       setItemToLocalStorage("refresh_token", refresh_token);
       showToast(message, "success");
@@ -89,12 +105,14 @@ const Login: React.FC = () => {
           name: user.name,
           isAuthenticated: true,
           role: user.role,
-          id: user._id,
+          id: userId,
         })
       );
       navigate("/");
     })
-    .catch(({ response }) => showToast(response.data.message, "error"));
+    .catch((error) =>
+      showToast(getApiErrorMessage(error, "Google sign-in failed"), "error")
+    );
   
   };
 
@@ -176,12 +194,14 @@ const Login: React.FC = () => {
           <div className="px-4 py-2 w-full flex justify-center gap-2">
             <GoogleLogin
               onSuccess={(credentialResponse: any) => {
-                const data: {
-                  name: string;
+                const data = jwtDecode<{
+                  name?: string;
+                  given_name?: string;
+                  family_name?: string;
                   email: string;
                   picture: string;
                   email_verified: boolean;
-                } = jwtDecode(credentialResponse?.credential);
+                }>(credentialResponse?.credential);
                 handleGooglSignIn(data);
               }}
               onError={() => {

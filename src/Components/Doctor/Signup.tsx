@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { DOCTOR_API } from '../../Constants/Index';
 import showToast from "../../Utils/Toaster";
+import getApiErrorMessage from "../../Utils/getApiErrorMessage";
 import { validateSignUp } from "../../Utils/Validation";
 interface SignUpResponse {
   message: string;
@@ -35,10 +36,9 @@ const Signup: React.FC = () => {
             navigate("/doctor/login");
           }, 1000);
         })
-        .catch(({ response }) => {
-          const { message } = response.data as { message: string };
+        .catch((error) => {
           setIsSubmitting(false);
-          showToast(message, "error");
+          showToast(getApiErrorMessage(error, "Registration failed"), "error");
         });
     },
   });
